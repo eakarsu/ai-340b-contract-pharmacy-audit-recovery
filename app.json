@@ -1,0 +1,1343 @@
+{
+  "id": "ai-340b-contract-pharmacy-audit-recovery",
+  "title": "340B Recovery Command Center",
+  "tagline": "Contract pharmacy compliance, reconciliation, and recovery intelligence",
+  "industry": "Healthcare Pharmacy Compliance",
+  "port": 4510,
+  "accent": "#14b8a6",
+  "valueLabel": "Recovery opportunity",
+  "value": "$4.8M",
+  "workflows": [
+    {
+      "id": "eligibility",
+      "title": "Patient Eligibility Validation",
+      "description": "Determine whether encounters satisfy covered-entity and patient-definition requirements.",
+      "fields": [
+        {
+          "key": "coveredEntity",
+          "label": "Covered Entity",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "patientId",
+          "label": "Patient Reference",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "encounterDate",
+          "label": "Encounter Date",
+          "type": "date",
+          "required": true
+        },
+        {
+          "key": "eligibilityBasis",
+          "label": "Eligibility Basis",
+          "type": "textarea",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "coveredEntity": "Covered Entity STD-2026-104",
+            "patientId": "MBR-104728",
+            "encounterDate": "2026-09-08",
+            "eligibilityBasis": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "coveredEntity": "Covered Entity RISK-2026-227",
+            "patientId": "MBR-208315",
+            "encounterDate": "2026-08-19",
+            "eligibilityBasis": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "coveredEntity": "Covered Entity EXC-2026-319",
+            "patientId": "MBR-319804",
+            "encounterDate": "2026-08-10",
+            "eligibilityBasis": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "dispense-reconcile",
+      "title": "Dispense-to-Purchase Reconciliation",
+      "description": "Match pharmacy dispenses to replenishment purchases and accumulator activity.",
+      "fields": [
+        {
+          "key": "pharmacy",
+          "label": "Contract Pharmacy",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "ndc",
+          "label": "NDC-11",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "dispenseQuantity",
+          "label": "Dispense Quantity",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "purchaseOrder",
+          "label": "Purchase Order",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "pharmacy": "H1234",
+            "ndc": "00069-1000-01",
+            "dispenseQuantity": 125,
+            "purchaseOrder": "Purchase Order STD-2026-104"
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "pharmacy": "H5678",
+            "ndc": "00078-0526-15",
+            "dispenseQuantity": 975,
+            "purchaseOrder": "Purchase Order RISK-2026-227"
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "pharmacy": "H9012",
+            "ndc": "50458-0580-30",
+            "dispenseQuantity": 41,
+            "purchaseOrder": "Purchase Order EXC-2026-319"
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-discount",
+      "title": "Duplicate Discount Detection",
+      "description": "Identify Medicaid fee-for-service and managed-care duplicate-discount exposure.",
+      "fields": [
+        {
+          "key": "claimReference",
+          "label": "Claim Reference",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "payerType",
+          "label": "Payer Type",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Medicaid FFS",
+            "Medicaid MCO",
+            "Medicare",
+            "Commercial"
+          ]
+        },
+        {
+          "key": "state",
+          "label": "State",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "carveStatus",
+          "label": "Carve Status",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Carve in",
+            "Carve out",
+            "Unclear"
+          ]
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "claimReference": "CLM-2026-001842",
+            "payerType": "Medicaid MCO",
+            "state": "Pennsylvania",
+            "carveStatus": "Carve in"
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "claimReference": "CLM-2026-004917",
+            "payerType": "Medicaid MCO",
+            "state": "California",
+            "carveStatus": "Unclear"
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "claimReference": "CLM-2026-007305",
+            "payerType": "Medicaid MCO",
+            "state": "Texas",
+            "carveStatus": "Carve in"
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "diversion",
+      "title": "Diversion Risk Review",
+      "description": "Evaluate diversion indicators and document corrective action.",
+      "fields": [
+        {
+          "key": "dispenseId",
+          "label": "Dispense ID",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "riskSignal",
+          "label": "Risk Signal",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Prescriber mismatch",
+            "Location mismatch",
+            "Ineligible encounter",
+            "Quantity anomaly"
+          ]
+        },
+        {
+          "key": "riskLevel",
+          "label": "Risk Level",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Low",
+            "Moderate",
+            "High",
+            "Critical"
+          ]
+        },
+        {
+          "key": "reviewNotes",
+          "label": "Review Notes",
+          "type": "textarea",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "dispenseId": "Dispense ID STD-2026-104",
+            "riskSignal": "Location mismatch",
+            "riskLevel": "High",
+            "reviewNotes": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "dispenseId": "Dispense ID RISK-2026-227",
+            "riskSignal": "Location mismatch",
+            "riskLevel": "Critical",
+            "reviewNotes": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "dispenseId": "Dispense ID EXC-2026-319",
+            "riskSignal": "Location mismatch",
+            "riskLevel": "High",
+            "reviewNotes": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "manufacturer-dispute",
+      "title": "Manufacturer Dispute Builder",
+      "description": "Assemble auditable evidence for manufacturer restriction or replenishment disputes.",
+      "fields": [
+        {
+          "key": "manufacturer",
+          "label": "Manufacturer",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "drug",
+          "label": "Drug / NDC",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "disputedAmount",
+          "label": "Disputed Amount",
+          "type": "currency",
+          "required": true
+        },
+        {
+          "key": "disputeNarrative",
+          "label": "Dispute Narrative",
+          "type": "textarea",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "manufacturer": "Apex Therapeutics",
+            "drug": "00069-1000-01",
+            "disputedAmount": 285000,
+            "disputeNarrative": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "manufacturer": "Northstar BioPharma",
+            "drug": "00078-0526-15",
+            "disputedAmount": 875000,
+            "disputeNarrative": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "manufacturer": "Meridian Life Sciences",
+            "drug": "50458-0580-30",
+            "disputedAmount": 142500,
+            "disputeNarrative": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "independent-audit",
+      "title": "Independent Audit Planner",
+      "description": "Plan annual independent contract-pharmacy audits and evidence requests.",
+      "fields": [
+        {
+          "key": "auditPeriod",
+          "label": "Audit Period",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "pharmacyCount",
+          "label": "Pharmacy Count",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "scope",
+          "label": "Audit Scope",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "key": "leadAuditor",
+          "label": "Lead Auditor",
+          "type": "text",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "auditPeriod": "Audit Period STD-2026-104",
+            "pharmacyCount": 125,
+            "scope": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "leadAuditor": "Lead Auditor STD-2026-104"
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "auditPeriod": "Audit Period RISK-2026-227",
+            "pharmacyCount": 975,
+            "scope": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "leadAuditor": "Lead Auditor RISK-2026-227"
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "auditPeriod": "Audit Period EXC-2026-319",
+            "pharmacyCount": 41,
+            "scope": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "leadAuditor": "Lead Auditor EXC-2026-319"
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "savings",
+      "title": "Savings Opportunity Analysis",
+      "description": "Quantify missed eligible claims and recovery potential.",
+      "fields": [
+        {
+          "key": "period",
+          "label": "Analysis Period",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "claimPopulation",
+          "label": "Claim Population",
+          "type": "number",
+          "required": true
+        },
+        {
+          "key": "estimatedValue",
+          "label": "Estimated Value",
+          "type": "currency",
+          "required": true
+        },
+        {
+          "key": "assumptions",
+          "label": "Assumptions",
+          "type": "textarea",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "period": "Analysis Period STD-2026-104",
+            "claimPopulation": 125,
+            "estimatedValue": 285000,
+            "assumptions": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "period": "Analysis Period RISK-2026-227",
+            "claimPopulation": 975,
+            "estimatedValue": 875000,
+            "assumptions": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "period": "Analysis Period EXC-2026-319",
+            "claimPopulation": 41,
+            "estimatedValue": 142500,
+            "assumptions": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis."
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    },
+    {
+      "id": "corrective-action",
+      "title": "Corrective Action Management",
+      "description": "Track root cause, remediation evidence, ownership, and closure approval.",
+      "fields": [
+        {
+          "key": "finding",
+          "label": "Finding",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "rootCause",
+          "label": "Root Cause",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "key": "owner",
+          "label": "Action Owner",
+          "type": "text",
+          "required": true
+        },
+        {
+          "key": "targetDate",
+          "label": "Target Date",
+          "type": "date",
+          "required": false
+        }
+      ],
+      "states": [
+        "intake",
+        "analyzing",
+        "review",
+        "approved",
+        "closed"
+      ],
+      "examples": [
+        {
+          "id": "standard",
+          "label": "Fill Standard Case",
+          "values": {
+            "finding": "Finding STD-2026-104",
+            "rootCause": "Complete: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "owner": "Action Owner STD-2026-104",
+            "targetDate": "2026-09-08"
+          }
+        },
+        {
+          "id": "high-risk",
+          "label": "Fill High-Risk Case",
+          "values": {
+            "finding": "Finding RISK-2026-227",
+            "rootCause": "Critical exception: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "owner": "Action Owner RISK-2026-227",
+            "targetDate": "2026-08-19"
+          }
+        },
+        {
+          "id": "exception",
+          "label": "Fill Exception Case",
+          "values": {
+            "finding": "Finding EXC-2026-319",
+            "rootCause": "Reviewer follow-up: source evidence, financial impact, control context, and documented reviewer rationale are available for analysis.",
+            "owner": "Action Owner EXC-2026-319",
+            "targetDate": "2026-08-10"
+          }
+        }
+      ],
+      "aiActions": [
+        {
+          "id": "assess",
+          "label": "Assess Risk & Value"
+        },
+        {
+          "id": "evidence",
+          "label": "Build Evidence Checklist"
+        },
+        {
+          "id": "plan",
+          "label": "Recommend Action Plan"
+        }
+      ]
+    }
+  ],
+  "operations": [
+    {
+      "id": "eligibility",
+      "title": "Patient Eligibility Validation Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for patient eligibility validation.",
+      "table": "op_eligibility",
+      "columns": [
+        {
+          "key": "coveredEntity",
+          "label": "Covered Entity",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_coveredEntity"
+        },
+        {
+          "key": "patientId",
+          "label": "Patient Reference",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_patientId"
+        },
+        {
+          "key": "encounterDate",
+          "label": "Encounter Date",
+          "type": "date",
+          "required": true,
+          "dbKey": "data_encounterDate"
+        },
+        {
+          "key": "eligibilityBasis",
+          "label": "Eligibility Basis",
+          "type": "textarea",
+          "required": false,
+          "dbKey": "data_eligibilityBasis"
+        }
+      ]
+    },
+    {
+      "id": "dispense-reconcile",
+      "title": "Dispense-to-Purchase Reconciliation Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for dispense-to-purchase reconciliation.",
+      "table": "op_dispense_reconcile",
+      "columns": [
+        {
+          "key": "pharmacy",
+          "label": "Contract Pharmacy",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_pharmacy"
+        },
+        {
+          "key": "ndc",
+          "label": "NDC-11",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_ndc"
+        },
+        {
+          "key": "dispenseQuantity",
+          "label": "Dispense Quantity",
+          "type": "number",
+          "required": true,
+          "dbKey": "data_dispenseQuantity"
+        },
+        {
+          "key": "purchaseOrder",
+          "label": "Purchase Order",
+          "type": "text",
+          "required": false,
+          "dbKey": "data_purchaseOrder"
+        }
+      ]
+    },
+    {
+      "id": "duplicate-discount",
+      "title": "Duplicate Discount Detection Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for duplicate discount detection.",
+      "table": "op_duplicate_discount",
+      "columns": [
+        {
+          "key": "claimReference",
+          "label": "Claim Reference",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_claimReference"
+        },
+        {
+          "key": "payerType",
+          "label": "Payer Type",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Medicaid FFS",
+            "Medicaid MCO",
+            "Medicare",
+            "Commercial"
+          ],
+          "dbKey": "data_payerType"
+        },
+        {
+          "key": "state",
+          "label": "State",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_state"
+        },
+        {
+          "key": "carveStatus",
+          "label": "Carve Status",
+          "type": "select",
+          "required": false,
+          "options": [
+            "Carve in",
+            "Carve out",
+            "Unclear"
+          ],
+          "dbKey": "data_carveStatus"
+        }
+      ]
+    },
+    {
+      "id": "diversion",
+      "title": "Diversion Risk Review Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for diversion risk review.",
+      "table": "op_diversion",
+      "columns": [
+        {
+          "key": "dispenseId",
+          "label": "Dispense ID",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_dispenseId"
+        },
+        {
+          "key": "riskSignal",
+          "label": "Risk Signal",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Prescriber mismatch",
+            "Location mismatch",
+            "Ineligible encounter",
+            "Quantity anomaly"
+          ],
+          "dbKey": "data_riskSignal"
+        },
+        {
+          "key": "riskLevel",
+          "label": "Risk Level",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Low",
+            "Moderate",
+            "High",
+            "Critical"
+          ],
+          "dbKey": "data_riskLevel"
+        },
+        {
+          "key": "reviewNotes",
+          "label": "Review Notes",
+          "type": "textarea",
+          "required": false,
+          "dbKey": "data_reviewNotes"
+        }
+      ]
+    },
+    {
+      "id": "manufacturer-dispute",
+      "title": "Manufacturer Dispute Builder Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for manufacturer dispute builder.",
+      "table": "op_manufacturer_dispute",
+      "columns": [
+        {
+          "key": "manufacturer",
+          "label": "Manufacturer",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_manufacturer"
+        },
+        {
+          "key": "drug",
+          "label": "Drug / NDC",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_drug"
+        },
+        {
+          "key": "disputedAmount",
+          "label": "Disputed Amount",
+          "type": "currency",
+          "required": true,
+          "dbKey": "data_disputedAmount"
+        },
+        {
+          "key": "disputeNarrative",
+          "label": "Dispute Narrative",
+          "type": "textarea",
+          "required": false,
+          "dbKey": "data_disputeNarrative"
+        }
+      ]
+    },
+    {
+      "id": "independent-audit",
+      "title": "Independent Audit Planner Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for independent audit planner.",
+      "table": "op_independent_audit",
+      "columns": [
+        {
+          "key": "auditPeriod",
+          "label": "Audit Period",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_auditPeriod"
+        },
+        {
+          "key": "pharmacyCount",
+          "label": "Pharmacy Count",
+          "type": "number",
+          "required": true,
+          "dbKey": "data_pharmacyCount"
+        },
+        {
+          "key": "scope",
+          "label": "Audit Scope",
+          "type": "textarea",
+          "required": true,
+          "dbKey": "data_scope"
+        },
+        {
+          "key": "leadAuditor",
+          "label": "Lead Auditor",
+          "type": "text",
+          "required": false,
+          "dbKey": "data_leadAuditor"
+        }
+      ]
+    },
+    {
+      "id": "savings",
+      "title": "Savings Opportunity Analysis Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for savings opportunity analysis.",
+      "table": "op_savings",
+      "columns": [
+        {
+          "key": "period",
+          "label": "Analysis Period",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_period"
+        },
+        {
+          "key": "claimPopulation",
+          "label": "Claim Population",
+          "type": "number",
+          "required": true,
+          "dbKey": "data_claimPopulation"
+        },
+        {
+          "key": "estimatedValue",
+          "label": "Estimated Value",
+          "type": "currency",
+          "required": true,
+          "dbKey": "data_estimatedValue"
+        },
+        {
+          "key": "assumptions",
+          "label": "Assumptions",
+          "type": "textarea",
+          "required": false,
+          "dbKey": "data_assumptions"
+        }
+      ]
+    },
+    {
+      "id": "corrective-action",
+      "title": "Corrective Action Management Register",
+      "description": "Operational records, ownership, status, financial value, and evidence for corrective action management.",
+      "table": "op_corrective_action",
+      "columns": [
+        {
+          "key": "finding",
+          "label": "Finding",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_finding"
+        },
+        {
+          "key": "rootCause",
+          "label": "Root Cause",
+          "type": "textarea",
+          "required": true,
+          "dbKey": "data_rootCause"
+        },
+        {
+          "key": "owner",
+          "label": "Action Owner",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_owner"
+        },
+        {
+          "key": "targetDate",
+          "label": "Target Date",
+          "type": "date",
+          "required": false,
+          "dbKey": "data_targetDate"
+        }
+      ]
+    },
+    {
+      "id": "covered-entities",
+      "title": "Covered Entity Registry",
+      "description": "Entity identifiers, eligibility basis, recertification, and program ownership.",
+      "table": "op_covered_entities",
+      "columns": [
+        {
+          "key": "entityId",
+          "label": "340B ID",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_entityId"
+        },
+        {
+          "key": "entityType",
+          "label": "Entity Type",
+          "type": "select",
+          "required": true,
+          "options": [
+            "DSH",
+            "FQHC",
+            "Children's hospital",
+            "Ryan White"
+          ],
+          "dbKey": "data_entityType"
+        },
+        {
+          "key": "parentOrganization",
+          "label": "Parent Organization",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_parentOrganization"
+        },
+        {
+          "key": "recertificationDate",
+          "label": "Recertification Date",
+          "type": "date",
+          "required": true,
+          "dbKey": "data_recertificationDate"
+        }
+      ]
+    },
+    {
+      "id": "pharmacy-network",
+      "title": "Contract Pharmacy Network",
+      "description": "Pharmacy relationships, TPAs, effective dates, and contract status.",
+      "table": "op_pharmacy_network",
+      "columns": [
+        {
+          "key": "pharmacy",
+          "label": "Pharmacy",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_pharmacy"
+        },
+        {
+          "key": "npi",
+          "label": "NPI",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_npi"
+        },
+        {
+          "key": "tpa",
+          "label": "TPA",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_tpa"
+        },
+        {
+          "key": "contractStatus",
+          "label": "Contract Status",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Active",
+            "Pending",
+            "Suspended",
+            "Terminated"
+          ],
+          "dbKey": "data_contractStatus"
+        }
+      ]
+    },
+    {
+      "id": "medicaid-matrix",
+      "title": "Medicaid Carve-In Matrix",
+      "description": "State-specific billing identifiers and duplicate-discount configurations.",
+      "table": "op_medicaid_matrix",
+      "columns": [
+        {
+          "key": "state",
+          "label": "State",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_state"
+        },
+        {
+          "key": "billingNpi",
+          "label": "Billing NPI",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_billingNpi"
+        },
+        {
+          "key": "carveStatus",
+          "label": "Carve Status",
+          "type": "select",
+          "required": true,
+          "options": [
+            "Carve in",
+            "Carve out"
+          ],
+          "dbKey": "data_carveStatus"
+        },
+        {
+          "key": "effectiveDate",
+          "label": "Effective Date",
+          "type": "date",
+          "required": true,
+          "dbKey": "data_effectiveDate"
+        }
+      ]
+    },
+    {
+      "id": "manufacturer-policies",
+      "title": "Manufacturer Policy Tracker",
+      "description": "Manufacturer restrictions, data demands, disputes, and effective dates.",
+      "table": "op_manufacturer_policies",
+      "columns": [
+        {
+          "key": "manufacturer",
+          "label": "Manufacturer",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_manufacturer"
+        },
+        {
+          "key": "restriction",
+          "label": "Restriction Type",
+          "type": "text",
+          "required": true,
+          "dbKey": "data_restriction"
+        },
+        {
+          "key": "effectiveDate",
+          "label": "Effective Date",
+          "type": "date",
+          "required": true,
+          "dbKey": "data_effectiveDate"
+        },
+        {
+          "key": "responseStrategy",
+          "label": "Response Strategy",
+          "type": "textarea",
+          "required": true,
+          "dbKey": "data_responseStrategy"
+        }
+      ]
+    }
+  ],
+  "domainProduct": {
+    "home": "340B Program Command Center",
+    "context": "HRSA eligibility, diversion prevention, duplicate-discount controls, replenishment integrity, and manufacturer dispute recovery.",
+    "features": [
+      {
+        "id": "patient-eligibility",
+        "title": "Patient Eligibility Adjudication",
+        "description": "Cross-check encounter, covered-entity, prescriber, and patient-definition evidence before a dispense is accumulated.",
+        "view": "evidence",
+        "modules": [
+          "eligibility",
+          "covered-entities"
+        ],
+        "actions": [
+          {
+            "id": "approve-eligible",
+            "label": "Approve Eligible Encounter",
+            "nextStatus": "Approved",
+            "auditDetail": "Approved patient-definition evidence and released the encounter to accumulation."
+          },
+          {
+            "id": "hold-ineligible",
+            "label": "Place Eligibility Hold",
+            "nextStatus": "Investigating",
+            "auditDetail": "Placed the encounter on hold pending missing eligibility evidence."
+          }
+        ]
+      },
+      {
+        "id": "dispense-replenishment",
+        "title": "Dispense & Replenishment Matching",
+        "description": "Resolve NDC-11, quantity, reversal, purchase-order, and accumulator variances at claim level.",
+        "view": "reconciliation",
+        "modules": [
+          "dispense-reconcile",
+          "pharmacy-network"
+        ],
+        "actions": [
+          {
+            "id": "confirm-match",
+            "label": "Confirm Replenishment Match",
+            "nextStatus": "Approved",
+            "auditDetail": "Confirmed dispense-to-purchase lineage and accumulator balance."
+          },
+          {
+            "id": "open-variance",
+            "label": "Open Quantity Variance",
+            "nextStatus": "Investigating",
+            "auditDetail": "Opened a replenishment variance for pharmacy and TPA resolution."
+          }
+        ]
+      },
+      {
+        "id": "duplicate-discount",
+        "title": "Medicaid Duplicate-Discount Control",
+        "description": "Apply state carve configuration and payer evidence to prevent 340B claims from also generating Medicaid rebates.",
+        "view": "control",
+        "modules": [
+          "duplicate-discount",
+          "medicaid-matrix"
+        ],
+        "actions": [
+          {
+            "id": "clear-claim",
+            "label": "Clear Duplicate-Discount Risk",
+            "nextStatus": "Approved",
+            "auditDetail": "Validated payer type, state carve setting, and billing identifier."
+          },
+          {
+            "id": "block-rebate-risk",
+            "label": "Block Rebate-Risk Claim",
+            "nextStatus": "Review",
+            "auditDetail": "Blocked a claim with unresolved Medicaid duplicate-discount exposure."
+          }
+        ]
+      },
+      {
+        "id": "manufacturer-recovery",
+        "title": "Manufacturer Restriction & Disputes",
+        "description": "Build claim-level dispute packages against replenishment restrictions and track recoverable value and response deadlines.",
+        "view": "deadline",
+        "modules": [
+          "manufacturer-dispute",
+          "manufacturer-policies"
+        ],
+        "actions": [
+          {
+            "id": "assemble-dispute",
+            "label": "Assemble Dispute Package",
+            "nextStatus": "Review",
+            "auditDetail": "Assembled manufacturer dispute narrative, claim support, and policy response."
+          },
+          {
+            "id": "submit-dispute",
+            "label": "Submit Manufacturer Dispute",
+            "nextStatus": "Approved",
+            "auditDetail": "Submitted a complete manufacturer dispute package for recovery."
+          }
+        ]
+      },
+      {
+        "id": "audit-capa",
+        "title": "Independent Audit & CAPA",
+        "description": "Plan pharmacy testing, document findings, assign root cause, retain remediation proof, and approve closure.",
+        "view": "board",
+        "modules": [
+          "independent-audit",
+          "corrective-action"
+        ],
+        "actions": [
+          {
+            "id": "accept-remediation",
+            "label": "Accept Remediation Evidence",
+            "nextStatus": "Approved",
+            "auditDetail": "Accepted corrective-action evidence after independent review."
+          },
+          {
+            "id": "require-retest",
+            "label": "Require Control Retest",
+            "nextStatus": "Investigating",
+            "auditDetail": "Returned the finding for control retest and additional proof."
+          }
+        ]
+      }
+    ]
+  },
+  "integrations": [
+    {
+      "id": "integration-1",
+      "name": "TPA accumulator feed",
+      "category": "Domain data source",
+      "mode": "Read-only demo connector"
+    },
+    {
+      "id": "integration-2",
+      "name": "Wholesaler purchase feed",
+      "category": "Domain data source",
+      "mode": "Read-only demo connector"
+    },
+    {
+      "id": "integration-3",
+      "name": "Contract pharmacy dispense feed",
+      "category": "Domain data source",
+      "mode": "Read-only demo connector"
+    },
+    {
+      "id": "integration-4",
+      "name": "Medicaid exclusion file",
+      "category": "Domain data source",
+      "mode": "Read-only demo connector"
+    },
+    {
+      "id": "integration-5",
+      "name": "EHR encounter feed",
+      "category": "Domain data source",
+      "mode": "Read-only demo connector"
+    }
+  ],
+  "featureCount": 40,
+  "seededRecords": 300,
+  "demoUsers": 3,
+  "apiPort": 5510,
+  "dbName": "profit_ai_340b_contract_pharmacy_audit_recovery"
+}
