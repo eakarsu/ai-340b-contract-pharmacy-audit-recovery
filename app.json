@@ -7,6 +7,15 @@
   "accent": "#14b8a6",
   "valueLabel": "Recovery opportunity",
   "value": "$4.8M",
+  "commercialExtension": {
+    "title": "340B Recovery & Connector Lab",
+    "summary": "Size a contract-pharmacy pilot and stage authoritative dispense, accumulator, purchase, Medicaid, and encounter feeds.",
+    "baselineLabel": "Annual dispense value", "volumeLabel": "Annual 340B dispenses", "unitValueLabel": "Average value per dispense", "opportunityRateLabel": "Exception / recovery rate", "captureRateLabel": "Expected capture rate",
+    "defaults": { "volume": 180000, "unitValue": 62, "opportunityRate": 4.2, "captureRate": 75 },
+    "pricing": "Platform subscription plus an optional percentage of validated manufacturer, replenishment, and duplicate-discount recovery.",
+    "milestones": ["Connect one contract pharmacy and TPA", "Reconcile dispense, accumulator, and purchase evidence", "Validate Medicaid duplicate-discount controls", "Release independently reviewed recovery packages"],
+    "connectors": [{"name":"TPA accumulator feed","status":"Pilot","purpose":"Claim-level accumulation and reversals","evidence":"Stable claim IDs, NDC-11, timestamps, and replay receipts"},{"name":"Wholesaler purchase feed","status":"Planned","purpose":"Replenishment and purchase-order lineage","evidence":"Invoice, shipment, quantity, and acquisition references"},{"name":"EHR encounter feed","status":"Planned","purpose":"Patient-definition evidence","evidence":"FHIR encounter provenance with restricted clinical access"}]
+  },
   "workflows": [
     {
       "id": "eligibility",
