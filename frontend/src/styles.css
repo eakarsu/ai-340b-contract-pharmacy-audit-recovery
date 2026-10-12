@@ -4,3 +4,15 @@
 
 .richText{color:#334155;line-height:1.65}.richText p{margin:7px 0}.richText.compact p{margin:3px 0}.richBullet{display:grid;grid-template-columns:18px 1fr;gap:5px;align-items:start}.richBullet>span{color:var(--accent);font-weight:900}.richBullet p{margin:2px 0}.riskBadge{background:#fff3e6;color:#9a3412;border:1px solid #fed7aa}.assumption{margin:17px 0;padding:14px 16px;border:1px solid #dbe4ee;border-radius:12px;background:#f8fafc}.assumption strong{display:block;margin-bottom:5px;color:#334155}.disclaimer{display:block;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
 .recordEditor{max-height:calc(100vh - 48px);max-width:760px;overflow:auto}.recordEditor header{align-items:flex-start}.recordEditorActions{border-top:1px solid var(--line);justify-content:flex-end;margin-top:20px;padding-top:16px}.deleteConfirm{background:#fff7f7;border:1px solid #fecaca;border-radius:12px;color:#7f1d1d;margin:18px 0 2px;padding:16px}.deleteConfirm p{margin:6px 0 0}.deleteConfirm .buttonRow{margin-top:12px}button.danger{background:#fee2e2;border:1px solid #fecaca;border-radius:8px;color:#991b1b;cursor:pointer;font-weight:700;padding:9px 14px}button.danger:hover{background:#fecaca}
+
+/* Operational record dialog */
+.recordEditor { width: min(960px, 100%); }
+.recordEditor .detail { min-width: 0; overflow-wrap: anywhere; }
+.recordEditor .detail dl { margin: 8px 0; }
+.recordEditor .detail dl div { margin: 8px 0; }
+.recordEditor .detail dt { color: var(--muted); font-size: 12px; font-weight: 700; }
+.recordEditor .detail dd { margin: 4px 0 0; }
+.recordEditorActions { position: sticky; bottom: -22px; background: white; padding: 14px 0; border-top: 1px solid var(--line); margin-bottom: 0; }
+.recordEditor .danger { border: 1px solid #fecaca; border-radius: 10px; background: #fff1f2; color: #b91c1c; padding: 11px 14px; font-weight: 800; cursor: pointer; }
+.deleteConfirm { margin: 18px 0; padding: 16px; border: 1px solid #fecaca; border-radius: 12px; background: #fff7f7; }
+tr.clickable:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
