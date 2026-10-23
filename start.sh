@@ -11,7 +11,8 @@ export API_HOST="${API_HOST:-127.0.0.1}"
 export PUBLIC_HOST="${PUBLIC_HOST:-$UI_HOST}"
 export OPENROUTER_BASE_URL="${OPENROUTER_BASE_URL:-https://openrouter.ai/api/v1}"
 export OPENROUTER_MODEL="${OPENROUTER_MODEL:-anthropic/claude-haiku-4.5}"
-export SESSION_SECRET="${SESSION_SECRET:-local-demo-session-secret-change-before-production}"
+if [ -z "${SESSION_SECRET:-}" ] || [ "${#SESSION_SECRET}" -lt 32 ]; then echo "SESSION_SECRET must be set to at least 32 random characters" >&2; exit 1; fi
+export SESSION_SECRET
 if [ -z "${DATABASE_URL:-}" ]; then
   db_user="${PGUSER:-$(id -un)}"
   db_name="profit_ai_340b_contract_pharmacy_audit_recovery"
@@ -19,6 +20,7 @@ if [ -z "${DATABASE_URL:-}" ]; then
   export DATABASE_URL="postgresql://$db_user@127.0.0.1:5432/$db_name"
 fi
 PGOPTIONS='--client-min-messages=warning' psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/migrations/001_schema.sql >/dev/null
+PGOPTIONS='--client-min-messages=warning' psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f backend/migrations/002_tasks.sql >/dev/null
 node backend/scripts/seed.mjs
 node backend/server.mjs &
 api_pid=$!

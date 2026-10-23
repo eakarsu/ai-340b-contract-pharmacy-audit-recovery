@@ -39,7 +39,7 @@ try {
   await new Promise(resolve => mock.listen(mockPort, '127.0.0.1', resolve));
   backend = spawn('node', ['backend/server.mjs'], { cwd: root, env, stdio: ['ignore','ignore','pipe'] });
   for (let attempt = 0; attempt < 60; attempt += 1) { try { await request('/api/health'); break; } catch { if (attempt === 59) throw new Error('backend did not become ready'); await new Promise(resolve => setTimeout(resolve, 100)); } }
-  const credentials = await request('/api/auth/demo-credentials');
+  const credentials = { email: process.env.DEMO_EMAIL || 'runtime-admin@example.com', password: process.env.DEMO_PASSWORD || 'LocalDemo!2026' };
   const login = await request('/api/auth/login', null, { method: 'POST', body: JSON.stringify(credentials) });
   const token = login.token;
   const product = await request('/api/app', token); assert(product.ai.configured && product.ai.provider === 'openrouter', 'OpenRouter status is not configured');
